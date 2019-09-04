@@ -1,0 +1,26 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      - "8020:80"
+      - "9001:9001"
+    restart: always
+    volumes:
+      - .:/app
+    networks:
+      - streamnet
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: stream
+    volumes:
+      - ../volumes/stream/mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - streamnet
+networks:
+  streamnet:
