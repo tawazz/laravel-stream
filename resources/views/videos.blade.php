@@ -15,9 +15,9 @@
                         </h4>
                     </div>
                     @if($video->processed)
-                        <video src="/storage/{{$video->stream_path}}"
-                               class="w-100"
-                               controls></video>
+                        <video   class="w-100 player" crossorigin controls playsinline  poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg">
+                            <source src="/stream/{{$video->id}}" type="video/mp4" size="576"/>
+                        </video>
                     @else
                         <div class="alert alert-info w-100">
                              Video is currently being processed and will be available shortly
