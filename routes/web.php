@@ -17,6 +17,7 @@ Auth::routes();
 Route::group(['middleware' => ['auth']], function(){
 
     Route::get('/', 'VideoController@index');
+    Route::get('/stream/{video}', 'VideoController@stream');
 
     Route::get('/uploader', 'VideoController@uploader')->name('uploader');
 

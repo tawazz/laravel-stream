@@ -54,3 +54,9 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+import Plyr from 'plyr';
+document.addEventListener('DOMContentLoaded', () => {
+const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
+
+window.players = players; 
+});

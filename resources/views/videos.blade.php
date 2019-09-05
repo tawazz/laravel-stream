@@ -15,9 +15,9 @@
                         </h4>
                     </div>
                     @if($video->processed)
-                        <video src="/storage/{{$video->stream_path}}"
-                               class="w-100"
-                               controls></video>
+                        <video   class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ str_replace('.mp4', '.jpg', $video->stream_path)}}">
+                            <source src="/stream/{{$video->id}}" type="video/mp4" size="576"/>
+                        </video>
                     @else
                         <div class="alert alert-info w-100">
                              Video is currently being processed and will be available shortly

@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use Storage;
 use FFMpeg;
 use App\Video;
 use Carbon\Carbon;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\X264;
+use FFMpeg\Media\Video as FFMpegVideo;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,27 +40,37 @@ class ConvertVideoForStreaming implements ShouldQueue
     {
         // create a video format...
         $lowBitrateFormat = (new X264('libmp3lame', 'libx264'))->setKiloBitrate(500);
+        $lowBitrateFormat->on('progress', function($video, $format, $percentage) {
+            echo "$percentage % \r";
+        });
 
-        $converted_name = $this->getCleanFileName($this->video->path);
+        $converted_name = $this->getCleanFileName($this->video->original_name);
+
+       
 
         // open the uploaded video from the right disk...
-        FFMpeg::fromDisk($this->video->disk)
-            ->open($this->video->path)
+        $video = FFMpeg::fromDisk($this->video->disk)->open($this->video->path);
 
-            // add the 'resize' filter...
-            ->addFilter(function ($filters) {
-                $filters->resize(new Dimension(960, 540));
-            })
+        //save poster
+        $frame = $video->getFrameFromTimecode(FFMpeg\Coordinate\TimeCode::fromSeconds(5));
+        $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+        $posterPath=  $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
+        $frame->save($posterPath);
 
-            // call the 'export' method...
-            ->export()
+        // convert video
+        FFMpeg::fromDisk($this->video->disk)->open($this->video->path)->addFilter(function ($filters) {
+            $filters->resize(new Dimension(960, 540));
+        })
 
-            // tell the MediaExporter to which disk and in which format we want to export...
-            ->toDisk('public')
-            ->inFormat($lowBitrateFormat)
+        // call the 'export' method...
+        ->export()
 
-            // call the 'save' method with a filename...
-            ->save($converted_name);
+        // tell the MediaExporter to which disk and in which format we want to export...
+        ->toDisk('public')
+        ->inFormat($lowBitrateFormat)
+
+        // call the 'save' method with a filename...
+        ->save($converted_name);
 
         // update the database so we know the convertion is done!
         $this->video->update([

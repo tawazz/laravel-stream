@@ -15,6 +15,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
 </head>
 <body>
     <div id="app">
