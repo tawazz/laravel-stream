@@ -15,7 +15,7 @@
                         </h4>
                     </div>
                     @if($video->processed)
-                        <video   class="w-100 player" crossorigin controls playsinline  poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg">
+                        <video   class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ str_replace('.mp4', '.jpg', $video->stream_path)}}">
                             <source src="/stream/{{$video->id}}" type="video/mp4" size="576"/>
                         </video>
                     @else
