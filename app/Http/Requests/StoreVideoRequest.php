@@ -25,7 +25,7 @@ class StoreVideoRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'video' => 'required|file|mimetypes:video/*',
+            'video' => 'required|file',
         ];
     }
 }
