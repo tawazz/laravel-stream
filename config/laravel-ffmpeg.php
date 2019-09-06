@@ -12,5 +12,5 @@ return [
         'binaries' => env('FFPROBE_BINARIES', '/usr/bin/ffprobe'),
     ],
 
-    'timeout' => 3600,
+    'timeout' => 0,
 ];

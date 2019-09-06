@@ -14,7 +14,7 @@
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth']], function(){
+Route::group([], function(){
 
     Route::get('/', 'VideoController@index');
     Route::get('/stream/{video}', 'VideoController@stream');

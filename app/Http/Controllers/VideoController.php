@@ -46,7 +46,7 @@ class VideoController extends Controller
             'title'         => $request->title,
         ]);
 
-        ConvertVideoForStreaming::dispatch($video);
+        dispatch(new ConvertVideoForStreaming($video));
 
         return redirect('/')
             ->with(

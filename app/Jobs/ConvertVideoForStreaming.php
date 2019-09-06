@@ -20,6 +20,8 @@ class ConvertVideoForStreaming implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $video;
+    public $tries = 1;
+    public $timeout = 10800;
 
     /**
      * Create a new job instance.
@@ -38,15 +40,16 @@ class ConvertVideoForStreaming implements ShouldQueue
      */
     public function handle()
     {
+        set_time_limit(0);
         // create a video format...
         $lowBitrateFormat = (new X264('libmp3lame', 'libx264'))->setKiloBitrate(500);
-        $lowBitrateFormat->on('progress', function($video, $format, $percentage) {
-            echo "$percentage % \r";
+        $lowBitrateFormat->on('progress', function ($video, $format, $percentage) {
+            echo "$percentage% \r";
         });
 
         $converted_name = $this->getCleanFileName($this->video->original_name);
 
-       
+
 
         // open the uploaded video from the right disk...
         $video = FFMpeg::fromDisk($this->video->disk)->open($this->video->path);
@@ -54,7 +57,10 @@ class ConvertVideoForStreaming implements ShouldQueue
         //save poster
         $frame = $video->getFrameFromTimecode(FFMpeg\Coordinate\TimeCode::fromSeconds(5));
         $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
-        $posterPath=  $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
+        if (!file_exists($storagePath.'public/posters')) {
+            mkdir($storagePath.'public/posters');
+        }
+        $posterPath = $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
         $frame->save($posterPath);
 
         // convert video
@@ -80,7 +86,8 @@ class ConvertVideoForStreaming implements ShouldQueue
         ]);
     }
 
-    private function getCleanFileName($filename){
+    private function getCleanFileName($filename)
+    {
         return preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename) . '.mp4';
     }
 }
