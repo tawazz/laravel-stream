@@ -46,7 +46,7 @@ class VideoController extends Controller
             'title'         => $request->title,
         ]);
 
-        dispatch(new ConvertVideoForStreaming($video))->onQueue('long_running');
+        dispatch(new ConvertVideoForStreaming($video))->onQueue('high');
 
         return redirect('/')
             ->with(
