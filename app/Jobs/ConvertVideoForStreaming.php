@@ -47,7 +47,7 @@ class ConvertVideoForStreaming implements ShouldQueue
             echo "$percentage% \r";
         });
 
-        $converted_name = $this->getCleanFileName($this->video->original_name);
+        $converted_name = $this->getCleanFileName($this->video->path);
 
 
 
@@ -59,6 +59,9 @@ class ConvertVideoForStreaming implements ShouldQueue
         $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         if (!file_exists($storagePath.'public/posters')) {
             mkdir($storagePath.'public/posters');
+        }
+        if (!file_exists($storagePath.'public/streams')) {
+            mkdir($storagePath.'public/streams');
         }
         $posterPath = $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
         $frame->save($posterPath);
@@ -76,14 +79,16 @@ class ConvertVideoForStreaming implements ShouldQueue
         ->inFormat($lowBitrateFormat)
 
         // call the 'save' method with a filename...
-        ->save($converted_name);
+        ->save('streams/'.$converted_name);
 
         // update the database so we know the convertion is done!
         $this->video->update([
             'converted_for_streaming_at' => Carbon::now(),
             'processed' => true,
-            'stream_path' => $converted_name
+            'stream_path' => 'streams/'.$converted_name
         ]);
+
+        unlink($storagePath.'public/'.$this->video->path);
     }
 
     private function getCleanFileName($filename)
