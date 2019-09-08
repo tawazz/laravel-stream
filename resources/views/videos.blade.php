@@ -5,7 +5,7 @@
         <h3 class="text-center">
             Videos
         </h3>
-        
+
         @foreach($videos as $video)
             <div class="row mt-5">
                 <div class="video" >
@@ -26,5 +26,16 @@
                 </div>
             </div>
         @endforeach
+    </div>
+    <div class="wrapper container-fluid">
+      <section id="section1" class="row">
+        <a href="#section3">‹</a>
+          @foreach($videos as $video)
+          <div class="item">
+            <img src="/storage/posters/{{ str_replace('.mp4', '.jpg', $video->stream_path)}}" height="300px"/>
+          </div>
+          @endforeach
+        <a href="#section3">›</a>
+      </section>
     </div>
 @endSection

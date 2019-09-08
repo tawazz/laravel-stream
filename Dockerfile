@@ -1,4 +1,5 @@
 FROM hub.tich.us/tawazz/nginx-php7.3
+RUN apt-get update && apt-get install jpegoptim optipng pngquant svgo gifsicle webp -y
 RUN mkdir -p /app
 WORKDIR /app
 COPY . .

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as FFMpegVideo;
+use Spatie\Image\Image;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -60,11 +61,20 @@ class ConvertVideoForStreaming implements ShouldQueue
         if (!file_exists($storagePath.'public/posters')) {
             mkdir($storagePath.'public/posters');
         }
+        if (!file_exists($storagePath.'public/posters/thumbnail')) {
+            mkdir($storagePath.'public/posters/thumbnail');
+        }
         if (!file_exists($storagePath.'public/streams')) {
             mkdir($storagePath.'public/streams');
         }
-        $posterPath = $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
+        $posterName = str_replace('.mp4', '.jpg', $converted_name);
+        $posterPath = $storagePath.'public/posters/'.$posterName;
         $frame->save($posterPath);
+        Image::load($posterPath)
+        ->width(300)
+        ->height(300)
+        ->optimize()
+        ->save($storagePath.'public/posters/thumnail'.$posterName);
 
         // convert video
         FFMpeg::fromDisk($this->video->disk)->open($this->video->path)->addFilter(function ($filters) {
