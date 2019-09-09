@@ -15,7 +15,7 @@
                         </h4>
                     </div>
                     @if($video->processed)
-                        <video   class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ str_replace('.mp4', '.jpg', $video->stream_path)}}">
+                        <video   class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ substr($video->path, 0, -3).'jpg'}}">
                             <source src="/stream/{{$video->id}}" type="video/mp4" size="576"/>
                         </video>
                     @else
@@ -29,13 +29,18 @@
     </div>
     <div class="wrapper container-fluid">
       <section id="section1" class="row">
-        <a href="#section3">‹</a>
+          @if (sizeof($videos) > 4)
+              <a href="#section3">‹</a>
+          @endif
+
           @foreach($videos as $video)
           <div class="item">
-            <img src="/storage/posters/{{ str_replace('.mp4', '.jpg', $video->stream_path)}}" height="300px"/>
+            <img src="/storage/posters/thumbnail/{{ substr($video->path, 0, -3).'jpg'}}" height="300px"/>
           </div>
           @endforeach
-        <a href="#section3">›</a>
+          @if (sizeof($videos) > 4)
+              <a href="#section3">›</a>
+          @endif
       </section>
     </div>
 @endSection
