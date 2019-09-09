@@ -1,7 +1,23 @@
 
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
+import Echo from "laravel-echo"
 
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '36mH8uWRwCs72bXKjQEEV',
+    cluster: 'mt1',
+    forceTLS: false,
+    wsHost: window.location.hostname,
+    wsPort: 6001,
+    disableStats: true,
+    encrypted: false,
+});
+
+window.Echo.channel('transcoding-progress')
+    .listen('TranscodingProgress', (e) => {
+        console.log(e);
+    });
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -58,5 +74,5 @@ import Plyr from 'plyr';
 document.addEventListener('DOMContentLoaded', () => {
 const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
 
-window.players = players; 
+window.players = players;
 });

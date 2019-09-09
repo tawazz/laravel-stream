@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="container">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -74,6 +74,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://js.pusher.com/4.4/pusher.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
 </body>

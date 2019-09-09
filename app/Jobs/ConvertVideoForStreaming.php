@@ -10,6 +10,7 @@ use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Spatie\Image\Image;
+use App\Events\TranscodingProgress;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -42,10 +43,11 @@ class ConvertVideoForStreaming implements ShouldQueue
     public function handle()
     {
         set_time_limit(0);
+        $video_id = $this->video->id;
         // create a video format...
         $lowBitrateFormat = (new X264('libmp3lame', 'libx264'))->setKiloBitrate(500);
-        $lowBitrateFormat->on('progress', function ($video, $format, $percentage) {
-            echo "$percentage% \r";
+        $lowBitrateFormat->on('progress', function ($video, $format, $percentage) use ($video_id) {
+            broadcast(new TranscodingProgress($video_id, $percentage));
         });
 
         $converted_name = $this->getCleanFileName($this->video->path);

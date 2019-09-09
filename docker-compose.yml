@@ -5,6 +5,7 @@ services:
     ports:
       - "8004:80"
       - "9001:9001"
+      - "6001:6001"
     restart: always
     volumes:
       - .:/app
