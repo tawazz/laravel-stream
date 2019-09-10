@@ -77,6 +77,9 @@ class ConvertVideoForStreaming implements ShouldQueue
         ->height(300)
         ->optimize()
         ->save($storagePath.'public/posters/thumbnail/'.$posterName);
+        $this->video->poster_path = 'posters/'.$posterName;
+        $this->video->thumbnail_path = 'posters/thumbnail/'.$posterName;
+        $this->video->save();
 
         // convert video
         FFMpeg::fromDisk($this->video->disk)->open($this->video->path)->addFilter(function ($filters) {
