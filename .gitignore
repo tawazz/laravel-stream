@@ -16,4 +16,4 @@ yarn-error.log
 /public/js
 .idea
 .editorconfig
-worker.log
+worker*.log

@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Format\Video\X264;
 use FFMpeg\Media\Video as FFMpegVideo;
+use Spatie\Image\Image;
+use App\Events\TranscodingProgress;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,13 +43,14 @@ class ConvertVideoForStreaming implements ShouldQueue
     public function handle()
     {
         set_time_limit(0);
+        $video_id = $this->video->id;
         // create a video format...
         $lowBitrateFormat = (new X264('libmp3lame', 'libx264'))->setKiloBitrate(500);
-        $lowBitrateFormat->on('progress', function ($video, $format, $percentage) {
-            echo "$percentage% \r";
+        $lowBitrateFormat->on('progress', function ($video, $format, $percentage) use ($video_id) {
+            broadcast(new TranscodingProgress($video_id, $percentage));
         });
 
-        $converted_name = $this->getCleanFileName($this->video->original_name);
+        $converted_name = $this->getCleanFileName($this->video->path);
 
 
 
@@ -60,8 +63,23 @@ class ConvertVideoForStreaming implements ShouldQueue
         if (!file_exists($storagePath.'public/posters')) {
             mkdir($storagePath.'public/posters');
         }
-        $posterPath = $storagePath.'public/posters/'.str_replace('.mp4', '.jpg', $converted_name);
+        if (!file_exists($storagePath.'public/posters/thumbnail')) {
+            mkdir($storagePath.'public/posters/thumbnail');
+        }
+        if (!file_exists($storagePath.'public/streams')) {
+            mkdir($storagePath.'public/streams');
+        }
+        $posterName = str_replace('.mp4', '.jpg', $converted_name);
+        $posterPath = $storagePath.'public/posters/'.$posterName;
         $frame->save($posterPath);
+        Image::load($posterPath)
+        ->width(300)
+        ->height(300)
+        ->optimize()
+        ->save($storagePath.'public/posters/thumbnail/'.$posterName);
+        $this->video->poster_path = 'posters/'.$posterName;
+        $this->video->thumbnail_path = 'posters/thumbnail/'.$posterName;
+        $this->video->save();
 
         // convert video
         FFMpeg::fromDisk($this->video->disk)->open($this->video->path)->addFilter(function ($filters) {
@@ -76,14 +94,16 @@ class ConvertVideoForStreaming implements ShouldQueue
         ->inFormat($lowBitrateFormat)
 
         // call the 'save' method with a filename...
-        ->save($converted_name);
+        ->save('streams/'.$converted_name);
 
         // update the database so we know the convertion is done!
         $this->video->update([
             'converted_for_streaming_at' => Carbon::now(),
             'processed' => true,
-            'stream_path' => $converted_name
+            'stream_path' => 'streams/'.$converted_name
         ]);
+
+        unlink($storagePath.'public/'.$this->video->path);
     }
 
     private function getCleanFileName($filename)
