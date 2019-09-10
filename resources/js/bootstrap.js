@@ -1,6 +1,18 @@
 
 window._ = require('lodash');
 window.Popper = require('popper.js').default;
+import Echo from "laravel-echo"
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '36mH8uWRwCs72bXKjQEEV',
+    cluster: 'mt1',
+    forceTLS: false,
+    wsHost: window.location.hostname,
+    wsPort: window.location.port,
+    disableStats: true,
+    encrypted: false,
+});
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -56,7 +68,6 @@ if (token) {
 // });
 import Plyr from 'plyr';
 document.addEventListener('DOMContentLoaded', () => {
-const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
-
-window.players = players; 
+    const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
+    window.players = players;
 });

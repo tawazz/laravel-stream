@@ -15,8 +15,17 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    created: function () {
+        window.Echo.channel('transcoding-progress')
+        .listen('TranscodingProgress', (e) => {
+            $(`#video_${e.video_id}`).width(`${e.progress}%`);
+            if (e.progress == 99) {
+                window.location.reload();
+            }
+        });
+    }
 });
