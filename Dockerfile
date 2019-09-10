@@ -1,4 +1,4 @@
-ROM node:10 as npm
+FROM node:10 as npm
 RUN mkdir -p /app
 WORKDIR /app
 COPY . .
