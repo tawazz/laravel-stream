@@ -18,4 +18,4 @@ EXPOSE 80
 EXPOSE 443
 EXPOSE 9001
 EXPOSE 6001
-CMD ["/bin/bash", "boot.sh"]
+CMD ["/bin/bash", "/app/boot.sh"]
