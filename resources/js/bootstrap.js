@@ -9,15 +9,11 @@ window.Echo = new Echo({
     cluster: 'mt1',
     forceTLS: false,
     wsHost: window.location.hostname,
-    wsPort: 6001,
+    wsPort: window.location.port,
     disableStats: true,
     encrypted: false,
 });
 
-window.Echo.channel('transcoding-progress')
-    .listen('TranscodingProgress', (e) => {
-        console.log(e);
-    });
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -72,7 +68,6 @@ if (token) {
 // });
 import Plyr from 'plyr';
 document.addEventListener('DOMContentLoaded', () => {
-const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
-
-window.players = players;
+    const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
+    window.players = players;
 });

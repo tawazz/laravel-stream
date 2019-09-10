@@ -15,32 +15,19 @@
                         </h4>
                     </div>
                     @if($video->processed)
-                        <video   class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ substr($video->path, 0, -3).'jpg'}}">
+                        <video class="w-100 player" crossorigin controls playsinline  poster="/storage/posters/{{ substr($video->path, 0, -3).'jpg'}}">
                             <source src="/stream/{{$video->id}}" type="video/mp4" size="576"/>
                         </video>
                     @else
                         <div class="alert alert-info w-100">
                              Video is currently being processed and will be available shortly
+                             <div class="progress">
+                                 <div id="video_{{$video->id}}"class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                            </div>
                         </div>
                     @endif
                 </div>
             </div>
         @endforeach
-    </div>
-    <div class="wrapper container-fluid">
-      <section id="section1" class="row">
-          @if (sizeof($videos) > 4)
-              <a href="#section3">‹</a>
-          @endif
-
-          @foreach($videos as $video)
-          <div class="item">
-            <img src="/storage/posters/thumbnail/{{ substr($video->path, 0, -3).'jpg'}}" height="300px"/>
-          </div>
-          @endforeach
-          @if (sizeof($videos) > 4)
-              <a href="#section3">›</a>
-          @endif
-      </section>
     </div>
 @endSection

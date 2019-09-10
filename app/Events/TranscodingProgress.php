@@ -13,7 +13,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class TranscodingProgress implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $progress;
+    public $progress, $video_id;
     /**
      * Create a new event instance.
      *
@@ -22,7 +22,7 @@ class TranscodingProgress implements ShouldBroadcast
     public function __construct($video_id, $progress)
     {
         $this->progress = $progress;
-        $this->$video_id = $video_id;
+        $this->video_id = $video_id;
     }
 
     /**
@@ -39,7 +39,7 @@ class TranscodingProgress implements ShouldBroadcast
     {
         return [
             "progress" => $this->progress,
-            "video_id" => $this->$video_id
+            "video_id" => $this->video_id
         ];
     }
 }
