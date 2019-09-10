@@ -90,9 +90,12 @@
   @include make-gradient-button($name, $val);
 }
 
-.btn-warning:not(:disabled):not(.disabled).active, 
-.btn-warning:not(:disabled):not(.disabled):active, 
+.btn-warning:not(:disabled):not(.disabled).active,
+.btn-warning:not(:disabled):not(.disabled):active,
 .show>.btn-warning.dropdown-toggle {
   color: $white-base;
 }
 
+.btn-rounded {
+    border-radius: 10em;
+}

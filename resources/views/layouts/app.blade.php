@@ -39,7 +39,7 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('uploader') }}">{{ __('Uploader') }}</a>
+                            <a class="btn purple-gradient btn-rounded" href="{{ route('uploader') }}">{{ __('Upload') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -54,6 +54,7 @@
     <!-- Scripts -->
     <script src="https://js.pusher.com/4.4/pusher.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('mdb.js') }}" defer></script>
 
 </body>
 </html>

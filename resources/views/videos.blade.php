@@ -16,7 +16,7 @@
 
                     <!-- Card content -->
                     <div class="card-body">
-                        <h4 class="card-title">{{$video->title}}</h4>
+                        <h4 class="card-title text-capitalize">{{$video->title}}</h4>
                     </div>
 
                 </div>
