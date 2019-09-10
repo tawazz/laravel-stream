@@ -8,7 +8,7 @@ FROM hub.tich.us/tawazz/nginx-php7.3
 RUN apt-get update && apt-get install jpegoptim optipng pngquant gifsicle webp -y
 RUN mkdir -p /app
 WORKDIR /app
-COPY --from=composer /app /app
+COPY --from=npm /app /app
 COPY .docker/site.conf /etc/nginx/sites-enabled/app.conf
 COPY .docker/supervisor.conf /etc/supervisor/conf.d/app.conf
 COPY .docker/php.ini /etc/php/7.3/fpm/php.ini
@@ -18,4 +18,4 @@ EXPOSE 80
 EXPOSE 443
 EXPOSE 9001
 EXPOSE 6001
-CMD ["/bin/bash", "/app/boot.sh"]
+CMD ["/bin/bash", "boot.sh"]
