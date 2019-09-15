@@ -1,3 +1,9 @@
+FROM node:10 as npm
+RUN mkdir -p /app
+WORKDIR /app
+COPY . .
+RUN npm i && npm run production
+
 FROM hub.tich.us/tawazz/nginx-php7.3
 RUN apt-get update && apt-get install jpegoptim optipng pngquant gifsicle webp -y
 RUN mkdir -p /app
@@ -12,4 +18,4 @@ EXPOSE 80
 EXPOSE 443
 EXPOSE 9001
 EXPOSE 6001
-CMD ["/bin/bash", "production.sh"]
+CMD ["/bin/bash", "boot.sh"]
