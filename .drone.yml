@@ -1,6 +1,5 @@
 kind: pipeline
 name: default
-services:
 steps:
   - image: drillster/drone-volume-cache
     name: restore-cache
@@ -13,20 +12,20 @@ steps:
       - name: cache
         path: /cache
     when:
-      event:
-        - push
       branch:
         - master
+      event:
+        - push
   - commands:
       - npm install
       - npm run prod
     image: 'node:10'
     name: compile production assets
     when:
-      event:
-        - push
       branch:
         - master
+      event:
+        - push
   - commands:
       - npm install
       - npm run prod
@@ -35,22 +34,22 @@ steps:
     image: composer
     name: composer install for production
     when:
-      event:
-       - push
       branch:
         - master
+      event:
+        - push
   - commands:
       - echo "$CI_ENV" > ./.env
-    image: 'ubuntu:18.04'
-    name: copy env file
     environment:
       CI_ENV:
         from_secret: ci_env
+    image: 'ubuntu:18.04'
+    name: copy env file
     when:
-      event:
-        - push
       branch:
         - master
+      event:
+        - push
   - image: drillster/drone-volume-cache
     name: rebuild deployment cache
     settings:
@@ -62,29 +61,29 @@ steps:
       - name: cache
         path: /cache
     when:
-      event:
-        - push
       branch:
         - master
+      event:
+        - push
   - image: plugins/docker
     name: build_image
     settings:
+      context: ./
+      dockerfile: ./Dockerfile
       password:
         from_secret: hub_password
       registry: hub.tich.us
-      context: ./
-      dockerfile: ./Dockerfile
       repo: hub.tich.us/tawazz/stream
-      username:
-        from_secret: hub_username
       tags:
         - latest
-        - ${DRONE_COMMIT_SHA}
+        - '${DRONE_COMMIT_SHA}'
+      username:
+        from_secret: hub_username
     when:
-      event:
-        - push
       branch:
         - master
+      event:
+        - push
 volumes:
   - host:
       path: /var/lib/cache
