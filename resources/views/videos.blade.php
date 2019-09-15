@@ -18,6 +18,12 @@
                     <div class="card-body">
                         <h4 class="card-title text-capitalize">{{$video->title}}</h4>
                     </div>
+                    <div class="card-footer">
+                      <form action="/videos/delete/{{$video->id}}" method="post">
+                          @csrf
+                          <button class="btn btn-danger btn-rounded float-right" type="submit">Delete</button>
+                      </form>
+                    </div>
 
                 </div>
                 <!-- Card -->

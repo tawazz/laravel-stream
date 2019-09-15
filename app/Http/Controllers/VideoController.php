@@ -132,4 +132,14 @@ class VideoController extends Controller
         flush();
         }
     }
+
+    public function delete(Video $video)
+    {
+      $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().'public/';
+      unlink($storagePath.$video->stream_path);
+      unlink($storagePath.$video->poster_path);
+      unlink($storagePath.$video->thumbnail_path);
+      $video->delete();
+      return redirect('/')->with('message', "deleted");
+    }
 }
