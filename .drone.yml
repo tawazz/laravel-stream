@@ -27,9 +27,6 @@ steps:
       event:
         - push
   - commands:
-      - npm install
-      - npm run prod
-  - commands:
       - composer install --ignore-platform-reqs --no-interaction --prefer-dist --optimize-autoloader --no-dev
     image: composer
     name: composer install for production
