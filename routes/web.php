@@ -14,13 +14,13 @@
 
 Auth::routes();
 
-Route::group([], function(){
-
+Route::group([], function () {
     Route::get('/', 'VideoController@index');
-    Route::post('/videos/delete/{video}', 'VideoController@delete');
     Route::get('/stream/{video}', 'VideoController@stream')->name('stream');
+});
 
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/videos/delete/{video}', 'VideoController@delete');
     Route::get('/uploader', 'VideoController@uploader')->name('uploader');
-
     Route::post('/upload', 'VideoController@store')->name('upload');
 });

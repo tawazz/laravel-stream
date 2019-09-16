@@ -3,14 +3,14 @@
 @section('content')
     <div class="row">
         @foreach($videos as $video)
-        <div class="col-md-6">
+        <div class="col-lg-6 col-sm-12">
             @if($video->processed)
                 <!-- Card -->
                 <div class="card card-cascade wider reverse">
                     <!-- Card image -->
                     <div class="view overlay">
                         <video class="w-100 player card-img-top" crossorigin controls playsinline poster="/storage/{{ $video->poster_path }}">
-                            <source src="/stream/{{$video->id}}" type="video/mp4" size="576" />
+                            <source src="{{ route('stream', $video->path) }}" type="video/mp4" size="576" />
                         </video>
                     </div>
 
@@ -18,12 +18,14 @@
                     <div class="card-body">
                         <h4 class="card-title text-capitalize">{{$video->title}}</h4>
                     </div>
-                    <div class="card-footer">
-                      <form action="/videos/delete/{{$video->id}}" method="post">
-                          @csrf
-                          <button class="btn btn-danger btn-rounded float-right" type="submit">Delete</button>
-                      </form>
-                    </div>
+                    @auth
+                        <div class="card-footer">
+                          <form action="/videos/delete/{{$video->id}}" method="post">
+                              @csrf
+                              <button class="btn btn-danger btn-rounded float-right" type="submit">Delete</button>
+                          </form>
+                        </div>
+                    @endauth
 
                 </div>
                 <!-- Card -->

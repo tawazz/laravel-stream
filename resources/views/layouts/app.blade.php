@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +19,7 @@
     <link href="{{ asset('css/mdb.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
 </head>
+
 <body>
     <div id="app" class="container">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
@@ -38,9 +40,26 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+                        @auth
                         <li class="nav-item">
                             <a class="btn purple-gradient btn-rounded" href="{{ route('uploader') }}">{{ __('Upload') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="btn blue-gradient btn-rounded" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                        @else
+                        <li class="nav-item">
+                            <a class="btn aqua-gradient btn-rounded" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
+                        @endauth
+
                     </ul>
                 </div>
             </div>
@@ -57,4 +76,5 @@
     <script src="{{ asset('mdb.js') }}" defer></script>
 
 </body>
+
 </html>
