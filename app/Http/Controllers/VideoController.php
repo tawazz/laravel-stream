@@ -25,7 +25,8 @@ class VideoController extends Controller
      * Return uploader form view for uploading videos
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function uploader(){
+    public function uploader()
+    {
         return view('uploader');
     }
 
@@ -70,47 +71,41 @@ class VideoController extends Controller
         header(sprintf('Content-type: %s', $mime));
         header('Accept-Ranges: bytes');
 
-        if(isset($_SERVER['HTTP_RANGE']))
-        {
-        $c_start = $start;
-        $c_end = $end;
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $c_start = $start;
+            $c_end = $end;
 
-        list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
 
-        if(strpos($range, ',') !== false)
-        {
-            header('HTTP/1.1 416 Requested Range Not Satisfiable');
-            header(sprintf('Content-Range: bytes %d-%d/%d', $start, $end, $size));
+            if (strpos($range, ',') !== false) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header(sprintf('Content-Range: bytes %d-%d/%d', $start, $end, $size));
 
-            exit;
-        }
+                exit;
+            }
 
-        if($range == '-')
-        {
-            $c_start = $size - substr($range, 1);
-        }
-        else
-        {
-            $range  = explode('-', $range);
-            $c_start = $range[0];
-            $c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
-        }
+            if ($range == '-') {
+                $c_start = $size - substr($range, 1);
+            } else {
+                $range  = explode('-', $range);
+                $c_start = $range[0];
+                $c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
+            }
 
-        $c_end = ($c_end > $end) ? $end : $c_end;
+            $c_end = ($c_end > $end) ? $end : $c_end;
 
-        if($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size)
-        {
-            header('HTTP/1.1 416 Requested Range Not Satisfiable');
-            header(sprintf('Content-Range: bytes %d-%d/%d', $start, $end, $size));
+            if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
+                header('HTTP/1.1 416 Requested Range Not Satisfiable');
+                header(sprintf('Content-Range: bytes %d-%d/%d', $start, $end, $size));
 
-            exit;
-        }
+                exit;
+            }
 
-        header('HTTP/1.1 206 Partial Content');
+            header('HTTP/1.1 206 Partial Content');
 
-        $start = $c_start;
-        $end = $c_end;
-        $length = $end - $start + 1;
+            $start = $c_start;
+            $end = $c_end;
+            $length = $end - $start + 1;
         }
 
         header("Content-Range: bytes $start-$end/$size");
@@ -121,15 +116,30 @@ class VideoController extends Controller
 
         fseek($fh, $start);
 
-        while(true)
-        {
-        if(ftell($fh) >= $end) break;
+        while (true) {
+            if (ftell($fh) >= $end) {
+                break;
+            }
 
-        set_time_limit(0);
+            set_time_limit(0);
 
-        echo fread($fh, $buffer);
+            echo fread($fh, $buffer);
 
-        flush();
+            flush();
         }
+    }
+
+    public function delete(Video $video)
+    {
+        $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix().'public/';
+        try {
+            unlink($storagePath.$video->stream_path);
+            unlink($storagePath.$video->poster_path);
+            unlink($storagePath.$video->thumbnail_path);
+        } catch (\Exception $e) {
+            dump($e);
+        }
+        $video->delete();
+        return redirect('/')->with('message', "deleted");
     }
 }
