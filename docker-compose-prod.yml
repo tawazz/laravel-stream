@@ -1,0 +1,26 @@
+version: "3"
+services:
+  web:
+    image: hub.tich.us/tawazz/stream:latest
+    ports:
+      - "8004:80"
+    restart: always
+    volumes:
+      - ./storage/app/public:/app/public/storage
+      - ./storage/app/public:/app/storage/app/public
+    networks:
+      - streamnet
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: stream
+    volumes:
+      - ../volumes/stream/mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - streamnet
+networks:
+  streamnet:
