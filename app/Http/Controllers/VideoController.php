@@ -7,6 +7,7 @@ use App\Jobs\ConvertVideoForStreaming;
 use App\Video;
 use Illuminate\Http\Request;
 use Storage;
+use App\Http\Resources\VideoResource;
 
 class VideoController extends Controller
 {
@@ -58,7 +59,7 @@ class VideoController extends Controller
 
     public function stream(Request $request)
     {
-        $video = Video::findorFail($request->video);
+        $video = Video::wherePath($request->video)->firstOrFail();
         $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         $file =  $storagePath.'public/'.$video->stream_path;
 
@@ -141,5 +142,11 @@ class VideoController extends Controller
         }
         $video->delete();
         return redirect('/')->with('message', "deleted");
+    }
+
+    public function apiIndex()
+    {
+        $videos = Video::whereProcessed(true)->latest()->get();
+        return VideoResource::collection($videos);
     }
 }

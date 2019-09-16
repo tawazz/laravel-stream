@@ -18,7 +18,7 @@ Route::group([], function(){
 
     Route::get('/', 'VideoController@index');
     Route::post('/videos/delete/{video}', 'VideoController@delete');
-    Route::get('/stream/{video}', 'VideoController@stream');
+    Route::get('/stream/{video}', 'VideoController@stream')->name('stream');
 
     Route::get('/uploader', 'VideoController@uploader')->name('uploader');
 
