@@ -45,7 +45,7 @@ class ConvertVideoForStreaming implements ShouldQueue
         set_time_limit(0);
         $video_id = $this->video->id;
         // create a video format...
-        $lowBitrateFormat = (new X264('libmp3lame', 'libx264'))->setKiloBitrate(500);
+        $lowBitrateFormat = (new X264('aac', 'libx264'))->setKiloBitrate(500);
         $lowBitrateFormat->on('progress', function ($video, $format, $percentage) use ($video_id) {
             broadcast(new TranscodingProgress($video_id, $percentage));
         });
