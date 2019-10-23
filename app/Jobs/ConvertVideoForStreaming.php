@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Storage;
 use FFMpeg;
 use App\Video;
 use Carbon\Carbon;
@@ -16,6 +15,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+use App\Jobs\UploadToCloud;
 
 class ConvertVideoForStreaming implements ShouldQueue
 {
@@ -100,10 +102,8 @@ class ConvertVideoForStreaming implements ShouldQueue
         $this->video->update([
             'converted_for_streaming_at' => Carbon::now(),
             'processed' => true,
-            'stream_path' => 'streams/'.$converted_name
         ]);
-
-        unlink($storagePath.'public/'.$this->video->path);
+        dispatch(new UploadToCloud($this->video->id));
     }
 
     private function getCleanFileName($filename)
