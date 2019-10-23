@@ -63,6 +63,8 @@ class VideoController extends Controller
         $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         $file =  $storagePath.'public/'.$video->stream_path;
 
+        $filestream = new \App\Http\Responses\S3FileStream($video->stream_path);
+        return $filestream->output();
         $mime = 'video/mp4';
         $size = filesize($file);
         $length = $size;
