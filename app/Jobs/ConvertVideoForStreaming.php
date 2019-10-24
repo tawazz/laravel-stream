@@ -102,6 +102,7 @@ class ConvertVideoForStreaming implements ShouldQueue
         $this->video->update([
             'converted_for_streaming_at' => Carbon::now(),
             'processed' => true,
+            'stream_path' => 'streams/'.$converted_name
         ]);
         dispatch(new UploadToCloud($this->video->id));
     }

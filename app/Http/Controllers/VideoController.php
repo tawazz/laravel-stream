@@ -60,11 +60,12 @@ class VideoController extends Controller
     public function stream(Request $request)
     {
         $video = Video::wherePath($request->video)->firstOrFail();
+        if(substr( $video->stream_path, 0, 5) === "video") {
+            $filestream = new \App\Http\Responses\S3FileStream($video->stream_path);
+            return $filestream->output();
+        }
         $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         $file =  $storagePath.'public/'.$video->stream_path;
-
-        $filestream = new \App\Http\Responses\S3FileStream($video->stream_path);
-        return $filestream->output();
         $mime = 'video/mp4';
         $size = filesize($file);
         $length = $size;
