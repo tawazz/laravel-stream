@@ -85,7 +85,7 @@ class ConvertVideoForStreaming implements ShouldQueue
 
         // convert video
         FFMpeg::fromDisk($this->video->disk)->open($this->video->path)->addFilter(function ($filters) {
-            $filters->resize(new Dimension(960, 540));
+            $filters->resize(new Dimension(1280, 720));
         })
 
         // call the 'export' method...
