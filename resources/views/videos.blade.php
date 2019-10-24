@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         @foreach($videos as $video)
-        <div class="col-lg-6 col-sm-12">
+        <div class="col-lg-6 col-sm-12 mb-4">
             @if($video->processed)
                 <!-- Card -->
                 <div class="card card-cascade wider reverse">
